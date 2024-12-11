@@ -43,5 +43,24 @@ var addStudent = function(myQuery){
     
 });
 }
+var studentExists = function(sid) {
+  return new Promise((resolve, reject) => {
+    pool.query(sid)
+    .then((data) => {
+    if(data.length > 0)
+    {
+      resolve(true);
+    }
+    else
+    {
+    resolve(false);
+    }
+    })
+    .catch((error) => {
+    console.log(error)
+    reject(error);
+    })
+  })
+}
 
-module.exports = { getStudents, addStudent};
+module.exports = { getStudents, addStudent,studentExists};

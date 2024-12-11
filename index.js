@@ -67,11 +67,21 @@ app.post("/students/add",
     [
     check("sid").isLength({min:4}).withMessage("Should ID should 4 characters"),
     check("name").isLength({min:2}).withMessage("Student Name should be at least 2 characters"),
-    check("age").isInt({min:18}).withMessage("Student age should be at least 18"),
+    check("age").isInt({min:18}).withMessage("Student age should be at least 18"), 
+    check("sid").custom(async (sid) =>{
+        var query = {
+            sql: 'SELECT * FROM student WHERE sid = ?',
+            values: [sid]
+        }
+        var exists = await  mySql.studentExists(query);
+        if (exists) {
+            throw new Error("Student with this ID already exists.");
+        }
+    })
     ],
     async (req, res) => {
-        
-          const errors = validationResult(req)
+    const errors = validationResult(req)
+   
     if(!errors.isEmpty())
     {
         res.render("addStudent",{"errors":errors.errors})
