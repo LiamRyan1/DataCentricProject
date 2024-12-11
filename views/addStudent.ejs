@@ -1,5 +1,6 @@
+<p><a href = "/">Home</a></p>
 <body></body>
-    <h1>Add Employee</h1>
+    <h1>Add Student</h1>
 
     <% if (errors != undefined) { %>
         <ul>
@@ -10,12 +11,12 @@
     <% } %>
 
     <form action="/addStudent" method="POST">
-        <label>ID:</label>
-        <input type="text" name="id"><br>
+        <label>Student ID:</label>
+        <input type="text" name="sid"><br>
         <label>Name</label>
         <input type="text" name="name"><br>
-        <label>Salary</label>
-        <input type="text" name="salary"><br>
-        <input type="submit" value="OK">
+        <label>Age</label>
+        <input type="text" name="age"><br>
+        <input type="submit" value="add">
     </form>
 </body>

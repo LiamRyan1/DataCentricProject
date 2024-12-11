@@ -3,7 +3,10 @@ var app = express();
 var mySql = require('./mySql')
 app.set('view engine', 'ejs');
 app.set('views', './views');
+var bodyParser = require('body-parser')
 
+const { check, validationResult } = require('express-validator');
+app.use(bodyParser.urlencoded({extended: false}))
 //listen on port 3004
 app.listen(3004,()=>{
     console.log("Application listening on port 3004");
@@ -39,6 +42,16 @@ app.get("/",(req,res)=>{
         </html>
     `);
 })
+app.get("/addStudent",(req,res)=>{
+    mySql.getStudents()
+    .then((data) => {
+        //render so it atapts to the html templaye 
+        res.render('addStudent',{"errors":undefined});
+    })
+    .catch((error) => {
+        res.send(error)
+    })
+})
 
 app.get("/students",(req,res)=>{
     mySql.getStudents()
@@ -49,4 +62,26 @@ app.get("/students",(req,res)=>{
     .catch((error) => {
         res.send(error)
     })
+})
+app.post("/addStudent",
+    [
+    check("sid").isLength({min:4}).withMessage("Should ID should 4 characters"),
+    check("name").isLength({min:2}).withMessage("Student Name should be at least 2 characters"),
+    check("age").isInt({min:18}).withMessage("Student age should be at least 18"),
+    ],
+    (req, res) => {
+        
+          const errors = validationResult(req)
+    if(!errors.isEmpty())
+    {
+        res.render("addStudent",{"errors":errors.errors})
+        
+    }
+    else{
+    console.log(JSON.stringify(errors))
+    employees.push(req.body)
+    res.redirect("/students")
+    }
+        
+  
 })
