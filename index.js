@@ -42,16 +42,6 @@ app.get("/",(req,res)=>{
         </html>
     `);
 })
-app.get("/addStudent",(req,res)=>{
-    mySql.getStudents()
-    .then((data) => {
-        //render so it atapts to the html templaye 
-        res.render('addStudent',{"errors":undefined});
-    })
-    .catch((error) => {
-        res.send(error)
-    })
-})
 
 app.get("/students",(req,res)=>{
     mySql.getStudents()
@@ -63,13 +53,23 @@ app.get("/students",(req,res)=>{
         res.send(error)
     })
 })
-app.post("/addStudent",
+app.get("/students/add",(req,res)=>{
+    mySql.getStudents()
+    .then((data) => {
+        //render so it atapts to the html templaye 
+        res.render('addStudent',{"errors":undefined});
+    })
+    .catch((error) => {
+        res.send(error)
+    })
+})
+app.post("/students/add",
     [
     check("sid").isLength({min:4}).withMessage("Should ID should 4 characters"),
     check("name").isLength({min:2}).withMessage("Student Name should be at least 2 characters"),
     check("age").isInt({min:18}).withMessage("Student age should be at least 18"),
     ],
-    (req, res) => {
+    async (req, res) => {
         
           const errors = validationResult(req)
     if(!errors.isEmpty())
@@ -78,9 +78,17 @@ app.post("/addStudent",
         
     }
     else{
-    console.log(JSON.stringify(errors))
-    employees.push(req.body)
-    res.redirect("/students")
+        var myQuery = {
+            sql: 'INSERT INTO student VALUES (?, ?, ?)',
+            values: [req.body.sid, req.body.name, req.body.age]
+            }
+            try {
+            await mySql.addStudent(myQuery);
+            res.redirect("/students");
+            }
+            catch(error){
+                console.log(error);
+            }
     }
         
   

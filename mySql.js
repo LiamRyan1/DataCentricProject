@@ -29,5 +29,19 @@ var getStudents = function () {
       });
   });
 };
+var addStudent = function(myQuery){
+    return new Promise((resolve, reject) => {
+    pool.query(myQuery)
+    .then((data) => {
+    console.log(data)
+    resolve(data);
+    })
+    .catch((error) => {
+    console.log(error)
+    reject(error);
+    })
+    
+});
+}
 
-module.exports = { getStudents };
+module.exports = { getStudents, addStudent};
