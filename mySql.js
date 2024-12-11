@@ -2,11 +2,11 @@ var pmysql = require("promise-mysql");
 
 var pool;
 pmysql.createPool({
-    connectionLimit: 4,
+    connectionLimit: 3,
     host: "localhost",
     password: "root",
     user: "root",
-    database: "student",
+    database: "proj2024Mysql",
   })
   .then((p) => {
     pool = p;
@@ -18,7 +18,7 @@ pmysql.createPool({
 var getStudents = function () {
   return new Promise((resolve, reject) => {
     pool
-      .query("SELECT * FROM student_table")
+      .query("SELECT * FROM student")
       .then((data) => {
         console.log(data);
         resolve(data);
