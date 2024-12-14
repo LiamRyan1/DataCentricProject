@@ -1,0 +1,31 @@
+<style>
+    table {
+        border:1px solid black;
+        border-collapse: separate; 
+        border-spacing: 1px;
+    }
+    th{
+        border:1px solid black;
+    }
+    td {
+        border:1px solid black;
+    }
+</style>
+<h1>Lecturers</h1>
+<p><a href = "/">Home</a></p>
+<table  >
+    <tr>
+        <th>Lecturer ID</th>
+        <th>Name</th>
+        <th>Department ID</th>
+        <th>Action</th>
+    </tr>
+    <% lecturers.forEach((lecturer) => { %>
+        <tr>
+            <td><%= lecturer._id %></td>
+            <td><%= lecturer.name %></td>
+            <td><%= lecturer.did %></td>
+            <td><a href = "/lecturers/delete/<%= lecturer._id %>">delete</a></td>
+        </tr>
+    <% }) %>
+</table>

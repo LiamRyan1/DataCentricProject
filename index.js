@@ -1,6 +1,7 @@
 var express = require("express");
 var app = express();
 var mySql = require("./mySql");
+var dao = require("./DAO");
 app.set("view engine", "ejs");
 app.set("views", "./views");
 var bodyParser = require("body-parser");
@@ -150,6 +151,15 @@ app.get("/grades", (req, res) => {
       res.send(error);
     });
 });
+app.get('/lecturers', (req, res) => {
+  dao.findAll()
+  .then((documents) => {
+  res.render("lecturers",{lecturers:documents})
+  })
+  .catch((error) => {
+    res.send(error);
+  })
+  })
 //listen on port 3004
 app.listen(3004, () => {
   console.log("Application listening on port 3004");
