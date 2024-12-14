@@ -72,7 +72,7 @@ app.post(
         sql: "SELECT * FROM student WHERE sid = ?",
         values: [sid],
       };
-      var exists = await mySql.studentExists(query);
+      var exists = await mySql.Exists(query);
       if (exists) {
         throw new Error("Student ID " + sid + " already exists.");
       }
@@ -164,7 +164,23 @@ app.get("/lecturers", (req, res) => {
       res.send(error);
     });
 });
-app.get(`/lecturers/delete/:_id`, (req, res) => {
+app.get(`/lecturers/delete/:_id`,[
+  check("_id").custom(async (_id) => {
+    var query = {
+      sql: "SELECT * FROM module WHERE lecturer = ?",
+      values: [_id],
+    };
+    var exists = await mySql.Exists(query);
+    if (exists) {
+      throw new Error("Lecture ID " + _id + " is assigned to a  module.");
+    }
+  }),
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    // Render an error message or handle it appropriately
+    return res.send(error);
+  }
   const lecID = req.params._id;
   dao
     .delLecturer(lecID)

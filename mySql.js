@@ -43,9 +43,9 @@ var addStudent = function(myQuery){
     
 });
 }
-var studentExists = function(sid) {
+var Exists = function(id) {
   return new Promise((resolve, reject) => {
-    pool.query(sid)
+    pool.query(id)
     .then((data) => {
     if(data.length > 0)
     {
@@ -99,4 +99,5 @@ var getGrades = function () {
   });
 };
 
-module.exports = { getStudents, addStudent,studentExists,FillStudentData,getGrades};
+
+module.exports = { getStudents, addStudent,Exists,FillStudentData,getGrades};
