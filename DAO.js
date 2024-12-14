@@ -11,7 +11,7 @@ console.log(error.message)
 })
 var findAll = function() {
     return new Promise((resolve, reject) => {
-    var cursor = coll.find()
+    var cursor = coll.find().sort({ _id: 1 }); 
     cursor.toArray()
     .then((documents) => {
     resolve(documents)
