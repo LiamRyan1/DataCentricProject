@@ -139,7 +139,17 @@ app.post(
     }
 }
 );
-
+app.get("/grades", (req, res) => {
+  mySql
+    .getGrades()
+    .then((data) => {
+      //render so it atapts to the html templaye
+      res.render("grades", { students: data });
+    })
+    .catch((error) => {
+      res.send(error);
+    });
+});
 //listen on port 3004
 app.listen(3004, () => {
   console.log("Application listening on port 3004");

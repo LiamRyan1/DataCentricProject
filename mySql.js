@@ -81,6 +81,22 @@ var FillStudentData = function(sid) {
     })
   })
 }
+var getGrades = function () {
+  return new Promise((resolve, reject) => {
+    pool
+      .query(`SELECT student.name AS student,
+        module.name AS module,
+        grade.grade AS grade From student Left join grade ON student.sid = grade.sid
+        LeFT JOIN module On grade.mid = module.mid Order by student.name ASC, grade ASC;`)
+      .then((data) => {
+        console.log(data);
+        resolve(data);
+      })
+      .catch((error) => {
+        console.log(error);
+        reject(error);
+      });
+  });
+};
 
-
-module.exports = { getStudents, addStudent,studentExists,FillStudentData};
+module.exports = { getStudents, addStudent,studentExists,FillStudentData,getGrades};

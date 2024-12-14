@@ -1,0 +1,30 @@
+<style>
+    table {
+        border:1px solid black;
+        border-collapse: separate; 
+        border-spacing: 1px;
+    }
+    th{
+        border:1px solid black;
+    }
+    td {
+        border:1px solid black;
+    }
+</style>
+<h1>Grades</h1>
+<p><a href = "/">Home</a></p>
+<table  >
+    <tr>
+        <th>Student</th>
+        <th>Module</th>
+        <th>Grade</th>
+    </tr>
+    <% students.forEach((student) => { %>
+        <tr>
+            <td><%= student.student %></td>
+            <td><%= student.module %></td>
+            <td><%= student.grade %></td>
+            
+        </tr>
+    <% }) %>
+</table>
