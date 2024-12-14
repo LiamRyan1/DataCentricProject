@@ -125,9 +125,12 @@ app.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        res.render("updateStudent", { student:{sid: req.body.sid ,name: req.body.name,age: req.body.age} , errors: errors.errors });
-      } else {
-    var myQuery = {
+      res.render("updateStudent", {
+        student: { sid: req.body.sid, name: req.body.name, age: req.body.age },
+        errors: errors.errors,
+      });
+    } else {
+      var myQuery = {
         sql: "UPDATE student SET name = ?,age =  ? WHERE sid = ?",
         values: [req.body.name, req.body.age, req.body.sid],
       };
@@ -138,7 +141,7 @@ app.post(
         console.log(error);
       }
     }
-}
+  }
 );
 app.get("/grades", (req, res) => {
   mySql
@@ -151,15 +154,29 @@ app.get("/grades", (req, res) => {
       res.send(error);
     });
 });
-app.get('/lecturers', (req, res) => {
-  dao.findAll()
-  .then((documents) => {
-  res.render("lecturers",{lecturers:documents})
-  })
-  .catch((error) => {
-    res.send(error);
-  })
-  })
+app.get("/lecturers", (req, res) => {
+  dao
+    .findAll()
+    .then((documents) => {
+      res.render("lecturers", { lecturers: documents });
+    })
+    .catch((error) => {
+      res.send(error);
+    });
+});
+app.get(`/lecturers/delete/:_id`, (req, res) => {
+  const lecID = req.params._id;
+  dao
+    .delLecturer(lecID)
+    .then((result) => {
+      // Do Something
+      res.redirect("/lecturers");
+    })
+    .catch((error) => {
+      // Do Something
+      res.send(error);
+    });
+});
 //listen on port 3004
 app.listen(3004, () => {
   console.log("Application listening on port 3004");

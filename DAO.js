@@ -1,3 +1,5 @@
+const { ObjectId } = require('mongodb')
+
 const MongoClient = require('mongodb').MongoClient
 MongoClient.connect('mongodb://127.0.0.1:27017')
 .then((client) => {
@@ -19,4 +21,15 @@ var findAll = function() {
     })
     })
 }
-module.exports = {findAll};
+var delLecturer = function(lecID) {
+    return new Promise((resolve, reject) => {
+    coll.deleteOne({_id:lecID})
+    .then((documents) => {
+    resolve(documents)
+    })
+    .catch((error) => {
+    reject(error)
+    })
+    })
+    }
+module.exports = {findAll, delLecturer};
