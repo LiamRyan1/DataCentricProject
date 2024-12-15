@@ -179,7 +179,9 @@ app.get(`/lecturers/delete/:_id`,[
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     // Render an error message or handle it appropriately
-    return res.send(error);
+    return res.send(`<a href = "/">Home</a>
+      <h1>Error Message</h1>
+      <h2>Cannot delete lecturer ${req.params._id}.He/She has associated modules</h3>`);
   }
   const lecID = req.params._id;
   dao
