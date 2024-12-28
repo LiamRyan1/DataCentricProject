@@ -8,7 +8,7 @@ var bodyParser = require("body-parser");
 
 const { check, validationResult } = require("express-validator");
 app.use(bodyParser.urlencoded({ extended: false }));
-
+//home page route
 app.get("/", (req, res) => {
   console.log("Get request on /");
   res.send(`
@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
         </html>
     `);
 });
-
+//fetch and dispaly all students
 app.get("/students", (req, res) => {
   mySql
     .getStudents()
@@ -51,13 +51,16 @@ app.get("/students", (req, res) => {
       res.send(error);
     });
 });
+//rendqER add student form
 app.get("/students/add", (req, res) => {
   res.render("addStudent", { errors: undefined });
 });
-
+//add new student data to sql database
 app.post(
   "/students/add",
   [
+
+    //ensure attributes are within spec and id is unique
     check("sid")
       .isLength({ min: 4 })
       .withMessage("Should ID should 4 characters"),
@@ -82,14 +85,14 @@ app.post(
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-      res.render("addStudent", { errors: errors.errors });
+      res.render("addStudent", { errors: errors.errors });//render form
     } else {
       var myQuery = {
         sql: "INSERT INTO student VALUES (?, ?, ?)",
         values: [req.body.sid, req.body.name, req.body.age],
       };
       try {
-        await mySql.addStudent(myQuery);
+        await mySql.addStudent(myQuery);//execute mysql 
         res.redirect("/students");
       } catch (error) {
         console.log(error);
@@ -97,14 +100,15 @@ app.post(
     }
   }
 );
+//render students edit form
 app.get("/students/edit/:sid", (req, res) => {
-  const sid = req.params.sid;
+  const sid = req.params.sid;//extract id from url
   var query = {
     sql: "SELECT * FROM student WHERE sid = ?",
     values: [sid],
   };
   mySql
-    .FillStudentData(query)
+    .FillStudentData(query)//fetch student data
     .then((data) => {
       res.render("updateStudent", { student: data[0], errors: undefined });
     })
@@ -112,6 +116,7 @@ app.get("/students/edit/:sid", (req, res) => {
       console.log(error);
     });
 });
+//handle update student data
 app.post(
   "/students/edit/:sid",
   [
@@ -135,7 +140,7 @@ app.post(
         values: [req.body.name, req.body.age, req.body.sid],
       };
       try {
-        await mySql.addStudent(myQuery);
+        await mySql.addStudent(myQuery);//execute query to update
         res.redirect("/students");
       } catch (error) {
         console.log(error);
@@ -143,6 +148,7 @@ app.post(
     }
   }
 );
+//deispaly and fetch   grades
 app.get("/grades", (req, res) => {
   mySql
     .getGrades()
@@ -154,6 +160,7 @@ app.get("/grades", (req, res) => {
       res.send(error);
     });
 });
+//dsiplay and fetch lecturers
 app.get("/lecturers", (req, res) => {
   dao
     .findAll()
@@ -164,12 +171,13 @@ app.get("/lecturers", (req, res) => {
       res.send(error);
     });
 });
+//delete lecturers
 app.get(`/lecturers/delete/:_id`,[
   check("_id").custom(async (_id) => {
     var query = {
       sql: "SELECT * FROM module WHERE lecturer = ?",
       values: [_id],
-    };
+    };//check for assigned module
     var exists = await mySql.Exists(query);
     if (exists) {
       throw new Error("Lecture ID " + _id + " is assigned to a  module.");
@@ -178,20 +186,18 @@ app.get(`/lecturers/delete/:_id`,[
 ], (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    // Render an error message or handle it appropriately
+   //cannot be deleted due to module render this
     return res.send(`<a href = "/">Home</a>
       <h1>Error Message</h1>
       <h2>Cannot delete lecturer ${req.params._id}.He/She has associated modules</h3>`);
   }
   const lecID = req.params._id;
   dao
-    .delLecturer(lecID)
+    .delLecturer(lecID)//call delete
     .then((result) => {
-      // Do Something
       res.redirect("/lecturers");
     })
     .catch((error) => {
-      // Do Something
       res.send(error);
     });
 });

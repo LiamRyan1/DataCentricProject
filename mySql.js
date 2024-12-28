@@ -1,6 +1,7 @@
 var pmysql = require("promise-mysql");
 
 var pool;
+//create a pool ,limit connections to 3
 pmysql.createPool({
     connectionLimit: 3,
     host: "localhost",
@@ -14,13 +15,14 @@ pmysql.createPool({
   .catch((e) => {
     console.log("pool error:" + e);
   });
-
+//fetch students from the student table
 var getStudents = function () {
   return new Promise((resolve, reject) => {
     pool
       .query("SELECT * FROM student")
       .then((data) => {
         console.log(data);
+        //return fetched data
         resolve(data);
       })
       .catch((error) => {
@@ -29,10 +31,13 @@ var getStudents = function () {
       });
   });
 };
+//reads in custom query 
 var addStudent = function(myQuery){
     return new Promise((resolve, reject) => {
+      //execute query
     pool.query(myQuery)
     .then((data) => {
+      //resolve with the result data
     console.log(data)
     resolve(data);
     })
@@ -43,17 +48,18 @@ var addStudent = function(myQuery){
     
 });
 }
+
 var Exists = function(id) {
   return new Promise((resolve, reject) => {
     pool.query(id)
     .then((data) => {
     if(data.length > 0)
     {
-      resolve(true);
+      resolve(true);//resolve wiht true if result is longer than 0
     }
     else
     {
-    resolve(false);
+    resolve(false);//result false
     }
     })
     .catch((error) => {
@@ -62,6 +68,7 @@ var Exists = function(id) {
     })
   })
 }
+//retrieve  student based on sid
 var FillStudentData = function(sid) {
   return new Promise((resolve, reject) => {
     pool.query(sid)
@@ -90,7 +97,7 @@ var getGrades = function () {
         LeFT JOIN module On grade.mid = module.mid Order by student.name ASC, grade ASC;`)
       .then((data) => {
         console.log(data);
-        resolve(data);
+        resolve(data);//resolvew with grades data
       })
       .catch((error) => {
         console.log(error);
